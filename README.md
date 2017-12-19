@@ -3,6 +3,8 @@ GY-521 MPU-6050 Digital Motion Processor (DMP) Arduino Library
 
 This library is MPU-6050 ported version from SparkFun MPU-9250 DMP Arduino Library.
 
+!!!!!!!!!!　Since porting to MPU 6050 has not been completed, please do not download !!!!!!!!!!
+
 Advanced Arduino library for the Invensense MPU-6050 inertial measurement unit (IMU), which enables the sensor's digital motion processing (DMP) features. Along with configuring and reading from the accelerometer, gyroscope, this library also supports the chip's DMP features like:
 
 * Quaternion calculation
