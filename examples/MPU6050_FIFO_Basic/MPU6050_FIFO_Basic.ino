@@ -1,41 +1,45 @@
 /************************************************************
-MPU9250_FIFO_Basic
- Basic example sketch for MPU-9250 DMP Arduino Library 
-Jim Lindblom @ SparkFun Electronics
-original creation date: November 23, 2016
-https://github.com/sparkfun/SparkFun_MPU9250_DMP_Arduino_Library
+MPU6050_FIFO_Basic
+Basic example sketch for MPU-6050 DMP Arduino Library 
+Tomoaki Tanaka<ganymean@gmail.com> 
 
-This example sketch demonstrates how to use the MPU-9250's
+This libraly is ported version from SparkFun MPU-6050 DMP Arduino Library.
+https://github.com/sparkfun/SparkFun_MPU-9250-DMP_Arduino_Library
+
+original creation date: January 5, 2018
+https://github.com/ganymean/Dragino-LoraMiniDev-MPU6050_DMP_Arduino_Library
+
+This example sketch demonstrates how to use the MPU-6050's
 512 byte first-in, first-out (FIFO) buffer. The FIFO can be
 set to store either accelerometer and/or gyroscope (not the
 magnetometer, though :( ).
 
 Development environment specifics:
 Arduino IDE 1.6.12
-SparkFun 9DoF Razor IMU M0
+GY-521 Breakout board
 
 Supported Platforms:
-- ATSAMD21 (Arduino Zero, SparkFun SAMD21 Breakouts)
+- Dragino LoRa mini DEV
 *************************************************************/
-#include <SparkFunMPU9250-DMP.h>
+#include <MPU6050-DMP.h>
 
 #define SerialPort SerialUSB
 
-MPU9250_DMP imu;
+MPU6050_DMP imu;
 
 void setup() 
 {
   SerialPort.begin(115200);
 
   // Call imu.begin() to verify communication with and
-  // initialize the MPU-9250 to it's default values.
+  // initialize the MPU-6050 to it's default values.
   // Most functions return an error code - INV_SUCCESS (0)
   // indicates the IMU was present and successfully set up
   if (imu.begin() != INV_SUCCESS)
   {
     while (1)
     {
-      SerialPort.println("Unable to communicate with MPU-9250");
+      SerialPort.println("Unable to communicate with MPU-6050");
       SerialPort.println("Check connections, and try again.");
       SerialPort.println();
       delay(5000);

@@ -1,33 +1,37 @@
 /******************************************************************************
-SparkFunMPU9250-DMP.h - MPU-9250 Digital Motion Processor Arduino Library 
-Jim Lindblom @ SparkFun Electronics
-original creation date: November 23, 2016
-https://github.com/sparkfun/SparkFun_MPU9250_DMP_Arduino_Library
+GY521_MPU6050-DMP.cpp - MPU-6050 Digital Motion Processor Arduino Library 
+Tomoaki Tanaka<ganymean@gmail.com> 
 
-This library implements motion processing functions of Invensense's MPU-9250.
+This libraly is ported version from SparkFun MPU-6050 DMP Arduino Library.
+https://github.com/sparkfun/SparkFun_MPU-6050-DMP_Arduino_Library
+
+original creation date: January 5, 2018
+https://github.com/ganymean/Dragino-LoraMiniDev-MPU6050-DMP-Arduino-Library
+
+This library implements motion processing functions of Invensense's MPU-6050.
 It is based on their Emedded MotionDriver 6.12 library.
 	https://www.invensense.com/developers/software-downloads/
 
 Development environment specifics:
 Arduino IDE 1.6.12
-SparkFun 9DoF Razor IMU M0
+GY-521 Breakout board
 
 Supported Platforms:
-- ATSAMD21 (Arduino Zero, SparkFun SAMD21 Breakouts)
+- Dragino LoRa mini DEV
 ******************************************************************************/
-#ifndef _SPARKFUN_MPU9250_DMP_H_
-#define _SPARKFUN_MPU9250_DMP_H_
+#ifndef _GY521_MPU6050_DMP_H_
+#define _GY521_MPU6050_DMP_H_
 
 #include <Wire.h>
 #include <Arduino.h>
 
 // Optimally, these defines would be passed as compiler options, but Arduino
 // doesn't give us a great way to do that.
-#define MPU9250
-#define AK8963_SECONDARY
-#define COMPASS_ENABLED
+#define MPU6050
+//#define AK8963_SECONDARY
+//#define COMPASS_ENABLED
 
-// Include the Invensense MPU9250 driver and DMP keys:
+// Include the Invensense MPU6050 driver and DMP keys:
 extern "C" {
 #include "util/inv_mpu.h"
 #include "util/inv_mpu_dmp_motion_driver.h"
@@ -46,7 +50,7 @@ enum t_axisOrder {
 // Define's passed to update(), to request a specific sensor (or multiple):
 #define UPDATE_ACCEL   (1<<1)
 #define UPDATE_GYRO    (1<<2)
-#define UPDATE_COMPASS (1<<3)
+//#define UPDATE_COMPASS (1<<3)
 #define UPDATE_TEMP    (1<<4)
 
 #define INT_ACTIVE_HIGH 0
@@ -67,21 +71,21 @@ const signed char defaultOrientation[9] = {
 #define ORIENT_REVERSE_PORTRAIT  2
 #define ORIENT_REVERSE_LANDSCAPE 3
 
-class MPU9250_DMP 
+class MPU6050_DMP 
 {
 public:
 	int ax, ay, az;
 	int gx, gy, gz;
-	int mx, my, mz;
+//	int mx, my, mz;
 	long qw, qx, qy, qz;
 	long temperature;
 	unsigned long time;
 	float pitch, roll, yaw;
 	float heading;
 	
-	MPU9250_DMP();
+	MPU6050_DMP();
 	
-	// begin(void) -- Verifies communication with the MPU-9250 and the AK8963,
+	// begin(void) -- Verifies communication with the MPU-6050( and the AK8963),
 	// and initializes them to the default state:
 	// All sensors enabled
 	// Gyro FSR: +/- 2000 dps
@@ -91,9 +95,10 @@ public:
 	// Output: INV_SUCCESS (0) on success, otherwise error
 	inv_error_t begin(void);
 	
-	// setSensors(unsigned char) -- Turn on or off MPU-9250 sensors. Any of the 
+	// setSensors(unsigned char) -- Turn on or off MPU-6050 sensors. Any of the 
 	// following defines can be combined: INV_XYZ_GYRO, INV_XYZ_ACCEL, 
-	// INV_XYZ_COMPASS, INV_X_GYRO, INV_Y_GYRO, or INV_Z_GYRO
+	// Before INV_XYZ_COMPASS, INV_X_GYRO, INV_Y_GYRO, or INV_Z_GYRO
+	// After  INV_X_GYRO, INV_Y_GYRO, or INV_Z_GYRO
 	// Input: Combination of enabled sensors. Unless specified a sensor will be
 	//  disabled.
 	// Output: INV_SUCCESS (0) on success, otherwise error
@@ -124,6 +129,7 @@ public:
 	// Output: Currently set accel sensitivity (e.g. 16384, 8192, 4096, 2048)
 	unsigned short getAccelSens(void);
 	
+/*
 	// getMagFSR -- Returns the current magnetometer FSR
 	// Output: Current mag uT range - +/-1450 uT
 	unsigned short getMagFSR(void);
@@ -131,7 +137,7 @@ public:
 	// divided by the resolution of the sensor (signed 16-bit).
 	// Output: Currently set mag sensitivity (e.g. 0.15)
 	float getMagSens(void);
-	
+*/	
 	// setLPF -- Sets the digital low-pass filter of the accel and gyro.
 	// Can be any of the following: 188, 98, 42, 20, 10, 5 (value in Hz)
 	// Input: 188, 98, 42, 20, 10, or 5 (defaults to 5 if incorrectly set)
@@ -154,6 +160,7 @@ public:
 	// Output: set sample rate of the accel/gyro. A value between 4-1000.
 	unsigned short getSampleRate(void);
 	
+/*
 	// setCompassSampleRate -- Set the magnetometer sample rate to a value
 	// between 1Hz and 100 Hz.
 	// The library will make an attempt to get as close as possible to the
@@ -166,30 +173,36 @@ public:
 	//
 	// Output: set sample rate of the magnetometer. A value between 1-100
 	unsigned short getCompassSampleRate(void);
-	
+*/	
 	// dataReady -- checks to see if new accel/gyro data is available.
 	// (New magnetometer data cannot be checked, as the library runs that sensor 
 	//  in single-conversion mode.)
 	// Output: true if new accel/gyro data is available
 	bool dataReady();
 	
-	// update -- Reads latest data from the MPU-9250's data registers.
+	// update -- Reads latest data from the MPU-6050's data registers.
 	// Sensors to be updated can be set using the [sensors] parameter.
 	// [sensors] can be any combination of UPDATE_ACCEL, UPDATE_GYRO,
-	// UPDATE_COMPASS, and UPDATE_TEMP.
+	// Before UPDATE_COMPASS, and UPDATE_TEMP.
+	// After  and UPDATE_TEMP.
 	// Output: INV_SUCCESS (0) on success, otherwise error
 	// Note: after a successful update the public sensor variables 
 	// (e.g. ax, ay, az, gx, gy, gz) will be updated with new data 
+/*
 	inv_error_t update(unsigned char sensors = 
 	                   UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
+*/
+	inv_error_t update(unsigned char sensors = 
+	                   UPDATE_ACCEL | UPDATE_GYRO);
 	
-	// updateAccel, updateGyro, updateCompass, and updateTemperature are 
+	// Before updateAccel, updateGyro, updateCompass, and updateTemperature are 
+	// After  updateAccel, updateGyro, and updateTemperature are 
 	// called by the update() public method. They read from their respective
 	// sensor and update the class variable (e.g. ax, ay, az)
 	// Output: INV_SUCCESS (0) on success, otherwise error
 	inv_error_t updateAccel(void);
 	inv_error_t updateGyro(void);
-	inv_error_t updateCompass(void);
+//	inv_error_t updateCompass(void);
 	inv_error_t updateTemperature(void);
 	
 	// configureFifo(unsigned char) -- Initialize the FIFO, set it to read from
@@ -214,22 +227,22 @@ public:
 	// Output: INV_SUCCESS (0) on success, otherwise error
 	inv_error_t resetFifo(void);
 	
-	// enableInterrupt -- Configure the MPU-9250's interrupt output to indicate
+	// enableInterrupt -- Configure the MPU-6050's interrupt output to indicate
 	// when new data is ready.
 	// Input: 0 to disable, >=1 to enable
 	// Output: INV_SUCCESS (0) on success, otherwise error
 	inv_error_t enableInterrupt(unsigned char enable = 1);
-	// setIntLevel -- Configure the MPU-9250's interrupt to be either active-
+	// setIntLevel -- Configure the MPU-6050's interrupt to be either active-
 	// high or active-low.
 	// Input: 0 for active-high, 1 for active-low
 	// Output: INV_SUCCESS (0) on success, otherwise error
 	inv_error_t setIntLevel(unsigned char active_low);
-	// setIntLatched -- Configure the MPU-9250's interrupt to latch or operate
+	// setIntLatched -- Configure the MPU-6050's interrupt to latch or operate
 	// as a 50us pulse.
 	// Input: 0 for 
 	// Output: INV_SUCCESS (0) on success, otherwise error
 	inv_error_t setIntLatched(unsigned char enable);
-	// getIntStatus -- Reads the MPU-9250's INT_STATUS register, which can
+	// getIntStatus -- Reads the MPU-6050's INT_STATUS register, which can
 	// indicate what (if anything) caused an interrupt (e.g. FIFO overflow or
 	// or data read).
 	// Output: contents of the INT_STATUS register
@@ -354,8 +367,10 @@ public:
 	float calcAccel(int axis);
 	// calcGyro -- Convert 16-bit signed gyroscope value to degree's per second
 	float calcGyro(int axis);
+/*
 	// calcMag -- Convert 16-bit signed magnetometer value to microtesla (uT)
 	float calcMag(int axis);
+*/
 	// calcQuat -- Convert Q30-format quaternion to a vector between +/- 1
 	float calcQuat(long axis);
 	
@@ -364,10 +379,11 @@ public:
 	// Output: class variables roll, pitch, and yaw will be updated on exit.	
 	void computeEulerAngles(bool degrees = true);
 	
+/*
 	// computeCompassHeading -- Compute heading based on most recently read mx, my, and mz values
 	// Output: class variable heading will be updated on exit
 	float computeCompassHeading(void);
-	
+*/	
 	// selfTest -- Run gyro and accel self-test.
 	// Output: Returns bit mask, 1 indicates success. A 0x7 is success on all sensors.
 	//         Bit pos 0: gyro
@@ -384,4 +400,4 @@ private:
 	unsigned short orientation_row_2_scale(const signed char *row);
 };
 
-#endif // _SPARKFUN_MPU9250_DMP_H_
+#endif // _GY521_MPU6050_DMP_H_

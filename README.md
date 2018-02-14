@@ -13,7 +13,7 @@ Advanced Arduino library for the Invensense MPU-6050 inertial measurement unit (
 * Tap detection
 * Orientation dtection
 
-For help getting started with this library, refer to the [Using the MPU-6050 DMP Arduino Library](https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide#using-the-mpu-9250-dmp-arduino-library) section of the 9DoF Razor IMU M0 Hookup Guide.
+For help getting started with this library, refer to the [Using the MPU-9250 DMP Arduino Library](https://learn.sparkfun.com/tutorials/9dof-razor-imu-m0-hookup-guide#using-the-mpu-9250-dmp-arduino-library) section of the 9DoF Razor IMU M0 Hookup Guide.
 
 **Note**: This library currently only supports and is tested on Arduino UNO. 
 

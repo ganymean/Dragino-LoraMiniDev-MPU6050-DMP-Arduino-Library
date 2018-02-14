@@ -1,28 +1,32 @@
 /************************************************************
-MPU9250_Basic_Interrupt
- Basic interrupt sketch for MPU-9250 DMP Arduino Library 
-Jim Lindblom @ SparkFun Electronics
-original creation date: November 23, 2016
-https://github.com/sparkfun/SparkFun_MPU9250_DMP_Arduino_Library
+MPU6050_Basic_Interrupt
+Basic interrupt sketch for MPU-6050 DMP Arduino Library 
+Tomoaki Tanaka<ganymean@gmail.com> 
+
+This libraly is ported version from SparkFun MPU-9250 DMP Arduino Library.
+https://github.com/sparkfun/SparkFun_MPU-9250-DMP_Arduino_Library
+
+original creation date: January 5, 2018
+https://github.com/ganymean/Dragino-LoraMiniDev-MPU6050_DMP_Arduino_Library
 
 This example sketch demonstrates how to initialize the 
 MPU-9250, and stream its sensor outputs to a serial monitor.
-It uses the MPU-9250's interrupt output to indicate when
+It uses the MPU-6050's interrupt output to indicate when
 new data is ready.
 
 Development environment specifics:
 Arduino IDE 1.6.12
-SparkFun 9DoF Razor IMU M0 (interrupt on pin 4)
+GY-521 Breakout board
 
 Supported Platforms:
-- ATSAMD21 (Arduino Zero, SparkFun SAMD21 Breakouts)
+- Dragino LoRa mini DEV
 *************************************************************/
-#include <SparkFunMPU9250-DMP.h>
+#include <MPU6050-DMP.h>
 
 #define SerialPort SerialUSB
 #define INTERRUPT_PIN 4
 
-MPU9250_DMP imu;
+MPU6050_DMP imu;
 
 void setup() 
 {
@@ -33,7 +37,7 @@ void setup()
   {
     while (1)
     {
-      SerialPort.println("Unable to communicate with MPU-9250");
+      SerialPort.println("Unable to communicate with MPU-6050");
       SerialPort.println("Check connections, and try again.");
       SerialPort.println();
       delay(5000);
@@ -42,10 +46,9 @@ void setup()
 
   // Enable all sensors, and set sample rates to 4Hz.
   // (Slow so we can see the interrupt work.)
-  imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
+  imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL );
   imu.setSampleRate(4); // Set accel/gyro sample rate to 4Hz
-  imu.setCompassSampleRate(4); // Set mag rate to 4Hz
-
+ 
   // Use enableInterrupt() to configure the MPU-9250's 
   // interrupt output as a "data ready" indicator.
   imu.enableInterrupt();
@@ -67,12 +70,12 @@ void setup()
 void loop() 
 {
   // The interrupt pin is pulled up using an internal pullup
-  // resistor, and the MPU-9250 is configured to trigger
+  // resistor, and the MPU-6050 is configured to trigger
   // the input LOW.
   if ( digitalRead(INTERRUPT_PIN) == LOW )
   {
     // Call update() to update the imu objects sensor data.
-    imu.update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
+    imu.update(UPDATE_ACCEL | UPDATE_GYRO );
     printIMUData();
   }
 }
@@ -83,7 +86,7 @@ void printIMUData(void)
   // my, mz, time, and/or temerature class variables are all
   // updated. Access them by placing the object. in front:
 
-  // Use the calcAccel, calcGyro, and calcMag functions to
+  // Use the calcAccel, calcGyro functions to
   // convert the raw sensor readings (signed 16-bit values)
   // to their respective units.
   float accelX = imu.calcAccel(imu.ax);
@@ -92,16 +95,11 @@ void printIMUData(void)
   float gyroX = imu.calcGyro(imu.gx);
   float gyroY = imu.calcGyro(imu.gy);
   float gyroZ = imu.calcGyro(imu.gz);
-  float magX = imu.calcMag(imu.mx);
-  float magY = imu.calcMag(imu.my);
-  float magZ = imu.calcMag(imu.mz);
   
   SerialPort.println("Accel: " + String(accelX) + ", " +
               String(accelY) + ", " + String(accelZ) + " g");
   SerialPort.println("Gyro: " + String(gyroX) + ", " +
               String(gyroY) + ", " + String(gyroZ) + " dps");
-  SerialPort.println("Mag: " + String(magX) + ", " +
-              String(magY) + ", " + String(magZ) + " uT");
   SerialPort.println("Time: " + String(imu.time) + " ms");
   SerialPort.println();
 }

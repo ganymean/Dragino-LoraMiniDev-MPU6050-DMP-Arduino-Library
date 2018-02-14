@@ -1,11 +1,16 @@
 /************************************************************
-MPU9250_DMP_Quaternion
- Quaternion example for MPU-9250 DMP Arduino Library 
-Jim Lindblom @ SparkFun Electronics
-original creation date: November 23, 2016
-https://github.com/sparkfun/SparkFun_MPU9250_DMP_Arduino_Library
+MPU6050_DMP_Quaternion
+Quaternion example for MPU-9250 DMP Arduino Library 
+Tomoaki Tanaka<ganymean@gmail.com>
 
-The MPU-9250's digital motion processor (DMP) can calculate
+This libraly is ported version from SparkFun MPU-6050 DMP 
+Arduino Library.
+https://github.com/sparkfun/SparkFun_MPU-9250-DMP_Arduino_Library
+
+original creation date: January 5, 2018
+https://github.com/ganymean/Dragino-LoraMiniDev-MPU6050_DMP_Arduino_Library
+
+The MPU-6050's digital motion processor (DMP) can calculate
 four unit quaternions, which can be used to represent the
 rotation of an object.
 
@@ -16,16 +21,16 @@ values.
 
 Development environment specifics:
 Arduino IDE 1.6.12
-SparkFun 9DoF Razor IMU M0
+GY-521 Breakout board
 
 Supported Platforms:
-- ATSAMD21 (Arduino Zero, SparkFun SAMD21 Breakouts)
+- Dragino LoRa mini DEV
 *************************************************************/
-#include <SparkFunMPU9250-DMP.h>
+#include <MPU6050-DMP.h>
 
 #define SerialPort SerialUSB
 
-MPU9250_DMP imu;
+MPU6050_DMP imu;
 
 void setup() 
 {
@@ -36,7 +41,7 @@ void setup()
   {
     while (1)
     {
-      SerialPort.println("Unable to communicate with MPU-9250");
+      SerialPort.println("Unable to communicate with MPU-6050");
       SerialPort.println("Check connections, and try again.");
       SerialPort.println();
       delay(5000);
